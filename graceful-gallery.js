@@ -80,15 +80,25 @@
 			$( self ).append( html.join("") );
 			pagination = $( self ).find( '.slider-pagination a' );
 
-			// setup pagination
-			$( pagination ).on( 'click', function( ) {
+			var click_function = function( ) {
 
 				index = $( this ).index( );
 				slide( width * index );
 
 				return false;
 
-			});
+			};
+			
+			// setup pagination
+			if ( $.isFunction( $.fn.on ) ) {
+				
+				$( pagination ).on( 'click', click_function );	
+				
+			} else {
+				
+				$( pagination ).live( 'click', click_function );
+				
+			}	
 
 			// update width on resize
 			$( window ).resize( function( ) {
