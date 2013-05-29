@@ -23,9 +23,9 @@
 			var self = $( this ),
 				width = $( this ).outerWidth( ),
 				pagination = false,
-				images_holder = $( this ).find( ".slider-images" ),
-				images = $( images_holder ).find( "img" ),
-				total_images = $( images ).length,
+				pages_holder = $( this ).find( ".slider-pages" ),
+				pages = $( pages_holder ).children(),
+				total_pages = $( pages ).length,
 				slider_timer = 0,
 				index = 0,
 				i = 1,
@@ -43,12 +43,12 @@
 
 				if ( typeof window.Modernizr !== 'undefined' && Modernizr.csstransitions ) {
 
-					images_holder.css( 'transform', [ "translate(-", left, "px)" ].join("") );
-					images_holder.css( 'transition', [ opts.slider_speed + 'ms cubic-bezier( 0.25, 0.1, 0.25, 1)' ].join("") );
+					pages_holder.css( 'transform', [ "translate(-", left, "px)" ].join("") );
+					pages_holder.css( 'transition', [ opts.slider_speed + 'ms cubic-bezier( 0.25, 0.1, 0.25, 1)' ].join("") );
 
 				} else {
 
-					images_holder.animate({ 'left': [ "-", left, "px" ].join("") }, opts.slider_speed );
+					pages_holder.animate({ 'left': [ "-", left, "px" ].join("") }, opts.slider_speed );
 
 				}
 
@@ -56,7 +56,7 @@
 				clearTimeout( slider_timer );
 				slider_timer = setTimeout( function() {
 
-					if ( ++index < total_images ) {
+					if ( ++index < total_pages ) {
 						left = width * index;
 					} else {
 						left = index = 0;
@@ -71,10 +71,10 @@
 			};
 
 			// setup the holder width
-			$( images_holder ).width( width * total_images );
+			$( pages_holder ).width( width * total_pages );
 
 			// generate the pagination markup
-			while( i < total_images ) {	html.push( '<a class="' ); html.push( opts.pagination_classes ); html.push( '" href="#">' ); html.push( ++i ); html.push( '</a>' ); }
+			while( i < total_pages ) {	html.push( '<a class="' ); html.push( opts.pagination_classes ); html.push( '" href="#">' ); html.push( ++i ); html.push( '</a>' ); }
 			html.push( '</div>' );
 			$( self ).append( html.join("") );
 			pagination = $( self ).find( '.slider-pagination a' );
