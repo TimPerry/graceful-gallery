@@ -14,7 +14,8 @@
 			"current_class": "is-current",
 			"pagination_classes" : "",
 			"slider_speed" : 1000,
-			"slider_timeout" : 6000
+			"slider_timeout" : 6000,
+			"disable_css_animations" : false
 
 		}, args);
 
@@ -41,7 +42,7 @@
 
 			var slide = function( left ) {
 
-				if ( typeof window.Modernizr !== 'undefined' && Modernizr.csstransitions ) {
+				if ( ! opts.disable_css_animations && typeof window.Modernizr !== 'undefined' && Modernizr.csstransitions ) {
 
 					pages_holder.css( 'transform', [ "translate(-", left, "px)" ].join("") );
 					pages_holder.css( 'transition', [ opts.slider_speed + 'ms cubic-bezier( 0.25, 0.1, 0.25, 1)' ].join("") );
