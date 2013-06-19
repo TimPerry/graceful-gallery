@@ -14,23 +14,25 @@
 			"current_class": "is-current",
 			"pagination_classes" : "",
 			"slider_speed" : 1000,
-			"slider_timeout" : 6000,
+			"slider_timeout" : 2000,
 			"disable_css_animations" : false
 
 		}, args);
 
 		return this.each( function( ) {
 
-			var self = $( this ),
-				width = $( this ).outerWidth( ),
-				pagination = false,
-				pages_holder = $( this ).find( ".slider-pages" ),
-				pages = $( pages_holder ).children(),
-				total_pages = $( pages ).length,
-				slider_timer = 0,
-				index = 0,
-				i = 1,
-				html = [
+			var globals = {
+			
+				self : $( this ),
+				width : $( this ).outerWidth( ),
+				pagination : false,
+				pages_holder : $( this ).find( ".slider-pages" ),
+				pages : null,
+				total_pages : null,
+				slider_timer : 0,
+				index : -1,
+				i : 1,
+				html : [
 
 					'<div class="slider-pagination"><a class="',
 					opts.pagination_classes,
@@ -38,86 +40,124 @@
 					opts.current_class,
 					'" href="#">1</a>'
 
-				];
+				]				
+			};
+            
+            // setup the extra variables now we have all the data
+            globals.pages = $( globals.pages_holder ).children();
+            globals.total_pages = globals.pages.length;
 
-			var slide = function( left ) {
+			var methods = {
+				
+				slide : function( increment ) {
+					 
+                    increment = increment || true;
+                     
+                    // first things first, clear the timeout     
+                    clearTimeout( globals.slider_timer );
+                    
+                    // force the class
+					$( globals.pagination ).siblings( ).removeClass( opts.current_class ).eq( globals.index ).addClass( opts.current_class );
+                    
+                    // now increment our index
+					if ( increment && ( ++globals.index >= globals.total_pages ) ) {
+						globals.index = 0;
+					}
+                    
+                    // caclulate where we should slide to
+                    var left = globals.index * globals.width;
+                                    		
+                    // perform the slide
+					if ( ! opts.disable_css_animations && typeof window.Modernizr !== 'undefined' && Modernizr.csstransitions ) {
 
-				if ( ! opts.disable_css_animations && typeof window.Modernizr !== 'undefined' && Modernizr.csstransitions ) {
+						globals.pages_holder.css( 'transform', [ "translate(-", left, "px)" ].join("") );
+						globals.pages_holder.css( 'transition', [ opts.slider_speed + 'ms cubic-bezier( 0.25, 0.1, 0.25, 1)' ].join("") );
 
-					pages_holder.css( 'transform', [ "translate(-", left, "px)" ].join("") );
-					pages_holder.css( 'transition', [ opts.slider_speed + 'ms cubic-bezier( 0.25, 0.1, 0.25, 1)' ].join("") );
-
-				} else {
-
-					pages_holder.animate({ 'left': [ "-", left, "px" ].join("") }, opts.slider_speed );
-
-				}
-
-				// restart timer
-				clearTimeout( slider_timer );
-				slider_timer = setTimeout( function() {
-
-					if ( ++index < total_pages ) {
-						left = width * index;
 					} else {
-						left = index = 0;
+
+						globals.pages_holder.animate({ 'left': [ "-", left, "px" ].join("") }, opts.slider_speed );
+
 					}
 
-					slide( left );
+					// restart timer
+					globals.slider_timer = setTimeout( function() {
 
-				}, opts.slider_timeout );
+						methods.slide( false );
 
-				$( pagination ).siblings( ).removeClass( opts.current_class ).eq( index ).addClass( opts.current_class );
+					}, opts.slider_timeout );
 
-			};
+				},
+				update_widths : function() {
 
-			// setup the holder width
-			$( pages_holder ).width( width * total_pages );
+                    // update the width used for each page
+					globals.width = globals.self.outerWidth();
+                    
+                    // force the width
+					globals.pages.width( globals.width );
+                    
+                    // make the pages holder wide enough for all the pages
+					globals.pages_holder.width( globals.width * globals.total_pages );
 
-			// generate the pagination markup
-			while( i < total_pages ) {	html.push( '<a class="' ); html.push( opts.pagination_classes ); html.push( '" href="#">' ); html.push( ++i ); html.push( '</a>' ); }
-			html.push( '</div>' );
-			$( self ).append( html.join("") );
-			pagination = $( self ).find( '.slider-pagination a' );
+				},
+				setup_pagination : function( ) {
+				
+					// generate the pagination markup
+					while( globals.i < globals.total_pages ) {
+					        
+                            globals.i++;
 
-			var click_function = function( ) {
+                            globals.html.push( '<a class="' );
+							globals.html.push( opts.pagination_classes );
+							globals.html.push( '" href="#">' );
+							globals.html.push( globals.i );
+							globals.html.push( '</a>' );
 
-				index = $( this ).index( );
-				slide( width * index );
+					}
+					
+					globals.html.push( '</div>' );
+					$( globals.self ).append( globals.html.join("") );
+					globals.pagination = $( globals.self ).find( '.slider-pagination a' );
 
-				return false;
+					var click_function = function( ) {
 
-			};
+						globals.index = $( this ).index( );
+						methods.slide( );
+
+						return false;
+
+					};
 			
-			// setup pagination
-			if ( $.isFunction( $.fn.on ) ) {
-				
-				$( pagination ).on( 'click', click_function );	
-				
-			} else {
-				
-				$( pagination ).live( 'click', click_function );
-				
-			}	
+					// setup pagination
+					if ( $.isFunction( $.fn.on ) ) {
+						$( globals.pagination ).on( 'click', click_function );	
+					} else {
+						$( globals.pagination ).live( 'click', click_function );
+					}
+					
+				}
+			
+			};
 
 			// update width on resize
 			$( window ).resize( function( ) {
-				width = $( self ).outerWidth( );
+				methods.update_widths();
 			});
 
-			// puase on hover
-			$( self ).hover( function( ) {
-
-				clearTimeout( slider_timer );
-
-			}, function( ) {
-
-				slide( width * index );
-
-			});
-
+			// pause on hover
+			//$( globals.self ).hover( function( ) {
+			//	clearTimeout( globals.slider_timer );
+			//}, function( ) {
+			//	methods.slide( );
+			//});
+			
+			// setup pagination
+			methods.setup_pagination();
+			
+			// setup the widths
+			methods.update_widths();
+			
 			// start up
-			slide( 0 );
+			methods.slide( );
 
 		});
 

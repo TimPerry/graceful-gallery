@@ -1,14 +1,15 @@
 .slider {
 	position: relative;
 	overflow: hidden;
-	height: 319px;
+	height: 800px;
+  width: 100%;
 	margin-bottom: 30px;
 }
 
 .slider .slider-pagination {
 	position: absolute;
-	bottom: 0px;
-	right: 0px;
+	bottom: 10px;
+	right: 10px;
 	padding: 10px;
 }
 
@@ -16,10 +17,15 @@
 	position: absolute;
 }
 
-.slider .slider-image {
+.slider .slider-pages img {
 	float: left;
 }
 
 .slider-pagination a {
-	margin: 4px;
+  display: inline-block;
+  margin: 4px;
+  background: rgb(50,50,50);
+  padding: 10px;
+  color: rgb(255,255,255);
+  text-decoration: none;
 }
