@@ -1,0 +1,25 @@
+.slider {
+	position: relative;
+	overflow: hidden;
+	height: 319px;
+	margin-bottom: 30px;
+}
+
+.slider .slider-pagination {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	padding: 10px;
+}
+
+.slider .slider-pages {
+	position: absolute;
+}
+
+.slider .slider-image {
+	float: left;
+}
+
+.slider-pagination a {
+	margin: 4px;
+}
