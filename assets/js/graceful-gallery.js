@@ -55,8 +55,7 @@
 					methods.slide( $slider, true );					
 				}, opts.slider_timeout );
 				
-			},
-			update_widths : function( $slider ) {
+			}, update_widths : function( $slider ) {
 				
 				$slider.page_width = $slider.outerWidth();
 				$slider.pages.width( $slider.page_width );
@@ -70,7 +69,7 @@
 				$slider.pages = $slider.pages_holder.children( );
 				$slider.pagination = false; // setup in setup_pagination
 				
-				$slider.page_width = false // setup laster in update widths
+				$slider.page_width = false; // setup laster in update widths
 				$slider.pages_count = $slider.pages.length;
 				$slider.timer = 0;
 				$slider.page_num = 0;
