@@ -16,6 +16,7 @@
 			"slider_speed": 1000,
 			"slider_timeout": 5000,
 			"disable_css_animations": false
+			"panels_container" : ".slider-pages"
 
 		}, args );
 		
@@ -65,7 +66,7 @@
 			setup_attrs : function( $slider ) {
 			
 				// setup slider attrs
-				$slider.pages_holder = $slider.find( ".slider-pages" );
+				$slider.pages_holder = $slider.find( opts.panels_container );
 				$slider.pages = $slider.pages_holder.children( );
 				$slider.pagination = false; // setup in setup_pagination
 				
